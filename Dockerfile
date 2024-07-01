@@ -1,4 +1,6 @@
-FROM node:16.16.0-alpine
+ARG BASE_IMAGE=node:16.16.0-alpine
+
+FROM ${BASE_IMAGE}
 
 LABEL maintainer="Nightscout Contributors"
 
