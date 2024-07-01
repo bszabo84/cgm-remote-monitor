@@ -52,8 +52,6 @@ services:
       # a token from every visit, using status-only will enable api-secret based login.
       AUTH_DEFAULT_ROLES: denied
 
-      MONGO_HIDE_TREATMENTS: ${MONGO_HIDE_TREATMENTS}
-
       # For all other settings, please refer to the Environment section of the README
       # https://github.com/nightscout/cgm-remote-monitor#environment
 
