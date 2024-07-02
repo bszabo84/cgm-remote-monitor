@@ -78,19 +78,35 @@ docker_release:
 		docker push $(DOCKER_IMAGE):latest_dev; \
 	fi
 
-custom_docker_release:
+# Check if builder exists
+BUILDER_NAME=nsbuilder
+check-builder:
+	# Checking for buildx builder
+	@if docker buildx inspect $(BUILDER_NAME) >/dev/null 2>&1; then \
+		echo "# Builder $(BUILDER_NAME) already exists."; \
+	else \
+		echo "# Creating builder $(BUILDER_NAME)..."; \
+		docker buildx create --name $(BUILDER_NAME) --driver docker-container --use; \
+		docker buildx inspect $(BUILDER_NAME) --bootstrap; \
+	fi
+
+
+custom_docker_release: check-builder
 	# Get the version from the package.json file
 	$(eval DOCKER_TAG=$(shell cat package.json | jq '.version' | tr -d '"'))
 	#
-	#
-	# Rebuild the image. We do this with no-cache so that we have all security upgrades,
+	# Rebuild, Tag and Push the image as latest to the custom repository. We do this with no-cache so that we have all security upgrades,
 	# since that's more important than fewer layers in the Docker image.
-	docker build --no-cache=true -t $(DOCKER_IMAGE):$(DOCKER_TAG) .
-	#
-	# Tag and push as latest to the custom repository if defined
 ifdef CUSTOM_REPOSITORY
-	docker tag $(DOCKER_IMAGE):$(DOCKER_TAG) $(CUSTOM_REPOSITORY)/$(DOCKER_IMAGE):latest && \
-	docker push $(CUSTOM_REPOSITORY)/$(DOCKER_IMAGE):latest;
+ifdef BASE_IMAGE
+	# ------ Build multi-arch image ------
+	docker buildx build --platform linux/amd64,linux/arm64 --builder $(BUILDER_NAME) --build-arg BASE_IMAGE="${BASE_IMAGE}" --no-cache=true -t $(CUSTOM_REPOSITORY)/$(DOCKER_IMAGE):latest --push .
+else
+	# ------ Build multi-arch image ------
+	docker buildx build --platform linux/amd64,linux/arm64 --builder $(BUILDER_NAME) --build-arg --no-cache=true -t $(CUSTOM_REPOSITORY)/$(DOCKER_IMAGE):latest --push .
+endif
+else
+	# Error: 'CUSTOM_REPOSITORY' is not defined.
 endif
 	
 

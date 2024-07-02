@@ -293,6 +293,10 @@ a, a:visited, a:link {
   color: #bdbdbd;
 }
 
+#currentTime {
+  color: white !important; /* Set color to white and use !important to ensure it overrides other styles */
+}
+
 #chartContainer {
   left: 0;
   right: 0;

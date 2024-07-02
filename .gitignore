@@ -32,6 +32,8 @@ npm-debug.log
 /obj/Debug
 /*.bat
 
+BUILD.md
+
 # directories created by docker-compose.yml
 mongo-data/
 letsencrypt/

@@ -40,7 +40,8 @@
     "dev": "env-cmd -f ./my.env nodemon --inspect lib/server/server.js 0.0.0.0",
     "dev-test": "env-cmd -f ./my.devtest.env nodemon --inspect lib/server/server.js 0.0.0.0",
     "prod": "env-cmd -f ./my.prod.env node lib/server/server.js 0.0.0.0",
-    "lint": "eslint lib"
+    "lint": "eslint lib",
+    "dev2": "env-cmd -f ./my.env concurrently \"webpack --watch --mode development --config webpack/webpack.config.js\" \"nodemon --inspect lib/server/server.js 0.0.0.0\""
   },
   "main": "lib/server/server.js",
   "nodemonConfig": {
@@ -65,7 +66,7 @@
     }
   },
   "engines": {
-    "node": "^16.x || ^14.x",
+    "node": "^18.x || ^16.x || ^14.x",
     "npm": "^6.x"
   },
   "dependencies": {
@@ -143,6 +144,7 @@
     "axios": "^0.21.1",
     "babel-eslint": "^10.1.0",
     "benv": "^3.3.0",
+    "concurrently": "^8.2.2",
     "csv-parse": "^4.12.0",
     "env-cmd": "^10.1.0",
     "eslint": "^7.19.0",
